@@ -8,17 +8,22 @@ use Illuminate\Http\Response as IlluminateResponse;
 class SonusServiceProvider extends ServiceProvider {
     
     /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
+
+    /**
      * Bootstrap the application events.
      *
      * @return void
      */
     public function boot()
     {
-        /* Config */
-        $this->mergeConfigFrom(__DIR__.'/../config/sonus.php', 'sonus'); 
-        $this->publishes([
-            __DIR__.'/../config/sonus.php' => config_path('sonus.php'),'config'
-        ]);
+        $this->publishes(array(
+            __DIR__.'/../../config/sonus.php' => config_path('sonus.php')
+        ));
     }
 
     /**
@@ -29,6 +34,12 @@ class SonusServiceProvider extends ServiceProvider {
     public function register()
     {
         $app = $this->app;
+
+        // merge default config
+        $this->mergeConfigFrom(
+            __DIR__.'/../../config/sonus.php',
+            'config'
+        );
 
         // create sonus
         $app['sonus'] = $app->share(function ($app) {
