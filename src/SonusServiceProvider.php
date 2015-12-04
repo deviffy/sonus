@@ -22,7 +22,7 @@ class SonusServiceProvider extends ServiceProvider {
     public function boot()
     {
         $this->publishes(array(
-            __DIR__.'/../../config/sonus.php' => config_path('sonus.php')
+            __DIR__.'/config/sonus.php' => config_path('sonus.php')
         ));
     }
 
@@ -37,7 +37,7 @@ class SonusServiceProvider extends ServiceProvider {
 
         // merge default config
         $this->mergeConfigFrom(
-            __DIR__.'/../../config/sonus.php',
+            __DIR__.'/config/sonus.php',
             'config'
         );
 
@@ -45,6 +45,16 @@ class SonusServiceProvider extends ServiceProvider {
         $app['sonus'] = $app->share(function ($app) {
             return new Sonus;
         });
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array('sonus');
     }
 
 }
