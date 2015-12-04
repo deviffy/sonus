@@ -1,47 +1,60 @@
-<?php namespace Closca\Sonus;
+<?php
+
+namespace Closca\Sonus;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Http\Response as IlluminateResponse;
 
 class SonusServiceProvider extends ServiceProvider {
+    
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->publishes(array(
+            __DIR__.'/../../config/sonus.php' => config_path('sonus.php')
+        ));
+    }
 
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->package('closca/sonus');
-	}
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $app = $this->app;
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-		$this->app['sonus'] = $this->app->share(function($app)
-        {
+        // merge default config
+        $this->mergeConfigFrom(
+            __DIR__.'/../../config/sonus.php',
+            'config'
+        );
+
+        // create sonus
+        $app['sonus'] = $app->share(function ($app) {
             return new Sonus;
         });
-	}
+    }
 
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array('sonus');
-	}
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array('sonus');
+    }
 
 }
